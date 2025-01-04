@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 public class ProductController {
@@ -19,47 +20,31 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<?> list() {
-
-        List<Product> products = productService.findAll();
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Productos listados correctamente!");
-        response.put("products", products);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-
+        return ResponseEntity.ok(productService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> details(@PathVariable Long id) {
 
         Optional<Product> productOptional = productService.findById(id);
-        Map<String, Object> response = new HashMap<>();
 
         if (productOptional.isPresent()) {
-            response.put("message", "Producto encontrado correctamente!");
-            response.put("product", productOptional.get());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.ok(productOptional.orElseThrow());
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "Producto con ID: " + id + " no encontrado!"));
+                .body(Collections.singletonMap("message", "Producto con ID: " + id + " no encontrado"));
     }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Product product) {
-
-        Product productNew = productService.save(product);
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Producto creado correctamente!");
-        response.put("product", productNew);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Product product) {
 
         Optional<Product> productOptional = findProductById(id);
-        Map<String, Object> response = new HashMap<>();
 
         if (productOptional.isPresent()) {
 
@@ -67,15 +52,12 @@ public class ProductController {
             productDb.setName(product.getName());
             productDb.setPrice(product.getPrice());
             productDb.setCreateAt(product.getCreateAt());
-            productService.save(productDb);
 
-            response.put("message", "Producto actualizado correctamente!");
-            response.put("product", productDb);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productDb));
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "Producto con ID: " + id + " no encontrado!"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", "Producto con ID: " + id + " no encontrado!"));
 
     }
 
@@ -90,7 +72,8 @@ public class ProductController {
                     .body(Collections.singletonMap("message", "Producto con id: " + id + " eliminado correctamente!"));
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("message", "Producto con ID: " + id + " no encontrado!"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", "Producto con ID: " + id + " no encontrado!"));
 
     }
 
