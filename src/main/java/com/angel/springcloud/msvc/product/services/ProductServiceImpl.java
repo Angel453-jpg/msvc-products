@@ -1,6 +1,6 @@
 package com.angel.springcloud.msvc.product.services;
 
-import com.angel.springcloud.msvc.product.entities.Product;
+import com.angel.libs.msvc.commons.entities.Product;
 import com.angel.springcloud.msvc.product.repositories.ProductRepository;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;

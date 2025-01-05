@@ -1,6 +1,6 @@
 package com.angel.springcloud.msvc.product.controllers;
 
-import com.angel.springcloud.msvc.product.entities.Product;
+import com.angel.libs.msvc.commons.entities.Product;
 import com.angel.springcloud.msvc.product.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
